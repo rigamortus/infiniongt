@@ -71,11 +71,6 @@ jobs:
             - name: Login to ACR
               run: |
                 az acr login -n rigaacr
-              # uses: azure/docker-login@v2
-              # with:
-              #   login-server: 'rigaacr.azurecr.io' # default: index.docker.io
-              #   # username: 'rigamortus'
-              #   # password: '${{ secrets.ACR_PASS }}'
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
