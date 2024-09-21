@@ -178,7 +178,7 @@ resource "azurerm_private_endpoint" "acr_endpoint" {
 resource "azurerm_key_vault_access_policy" "aks_access" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = module.clusters.aks.kubelet_identity[0].object_id
+  object_id    = module.clusters.kubelet_identity["my-aks"]
 
   # Specify the permissions for secrets
   secret_permissions = [
@@ -188,13 +188,13 @@ resource "azurerm_key_vault_access_policy" "aks_access" {
 }
 
 resource "azurerm_role_assignment" "aks_keyvault_access" {
-  principal_id         = module.clusters.aks.kubelet_identity[0].object_id
+  principal_id         = module.clusters.kubelet_identity["my-aks"]
   role_definition_name = "Key Vault Secrets User"
   scope                = azurerm_key_vault.key_vault.id
 }
 
 resource "azurerm_role_assignment" "myacrole" {
-  principal_id                     = module.clusters.aks.kubelet_identity[0].object_id
+  principal_id                     = module.clusters.kubelet_identity["my-aks"]
   role_definition_name             = "AcrPull"
   scope                            = azurerm_container_registry.acr.id
   skip_service_principal_aad_check = true

@@ -45,3 +45,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 output "kubernetes_cluster_id" {
   value = { for name, cluster in azurerm_kubernetes_cluster.aks : name => cluster.id }
 }
+
+output "kubelet_identity" {
+  value = { for name, cluster in azurerm_kubernetes_cluster.aks: name => cluster.kubelet_identity.object_id }
+}
