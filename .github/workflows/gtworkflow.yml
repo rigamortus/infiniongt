@@ -58,7 +58,7 @@ jobs:
               working-directory: tercluster/
     docker_stage:
       runs-on: ubuntu-latest
-      needs: terraform_infrastructure
+      #needs: terraform_infrastructure
       steps:
             - name: Repo Checkout
               uses: actions/checkout@v4
@@ -68,6 +68,12 @@ jobs:
                 client-id: ${{ secrets.AZURE_CLIENT_ID }}
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                 subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            # - name: Login to ACR
+            #   uses: azure/docker-login@v2
+            #   with:
+            #     login-server: 'rigamortus.azurecr.io' # default: index.docker.io
+            #     username: 'rigamortus'
+            #     password: '${{ secrets.ACR_PASS }}'
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
