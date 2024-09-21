@@ -102,7 +102,7 @@ jobs:
           run: |
             az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
         - name: Deployment    
-          uses: Azure/k8s-deploy@v5
+          uses: Azure/k8s-deploy@v4
           with:
               resource-group: myrg
               name: my-aks
