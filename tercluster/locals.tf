@@ -132,7 +132,7 @@ resource "azurerm_container_registry" "acr" {
   location                      = "north europe"
   sku                           = "Basic"
   admin_enabled                 = false
-  public_network_access_enabled = false
+  #public_network_access_enabled = false
 }
 
 
