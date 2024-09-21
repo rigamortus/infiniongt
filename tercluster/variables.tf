@@ -9,3 +9,36 @@ variable "ARM_TENANT_ID" {
   default     = "215b7ce2-5263-4593-a622-da030405d151"
   description = "description"
 }
+
+variable "nsg_name" {
+  type    = string
+  default = "my-nsg"
+}
+
+variable "kv_private_dns_zone" {
+  default = "mydns"
+}
+
+variable "acr_dns" {
+  default = "myacr"
+}
+
+variable "key_vault_name" {
+  default = "mykeyvault"
+}
+
+variable "key_vault_endpoint" {
+  default = "mykeyendpoint"
+}
+
+variable "key_vault_service_connection" {
+  default = "keyvaultservconnect"
+}
+
+variable "container_registry_endpoint" {
+  default = "myacrendpoint"
+}
+
+variable "container_registry_service_connection" {
+  default = "myacrserviceconnect"
+}
