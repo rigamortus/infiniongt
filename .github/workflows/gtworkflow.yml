@@ -104,3 +104,4 @@ jobs:
         - name: Deployment
           run: |
             kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml
+            
