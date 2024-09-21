@@ -107,9 +107,6 @@ jobs:
         
               private-cluster: true
               manifests: |
-                  manifests/deploying.yml
-                  manifests/ing.yml
-                  manifests/secretclass.yml
-                  manifests/svc.yml
+                /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests
               images: |
                 rigaacr.azurecr.io/flaskapp:latest
