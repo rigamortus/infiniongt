@@ -4,6 +4,7 @@ on:
     workflow_dispatch:
     push:
         branches: [ main ]
+        paths: 'tercluster/'
         paths-ignore: 'README.md'
 
 permissions:
@@ -28,8 +29,11 @@ jobs:
                 terraform_version: "4.0.1"
             - name: Terraform Init
               run: terraform init -backend-config="${{ secrets.AZURE_CREDENTIALS }}"
+
             - name: Terraform Plan
               run: |
                 terraform plan | tee infraplan
+              working-directory: tercluster/
             - name: Teraform Apply
               run: terraform apply "infraplan"
+              working-directory: tercluster/
