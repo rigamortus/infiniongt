@@ -97,9 +97,6 @@ jobs:
         - name: Create Vault Secret
           run: |
             az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
-        - name: Install Secret Store CSI
-          run: |
-            az aks enable-addons --addons azure-keyvault-secrets-provider --name my-aks --resource-group myrg
         - name: Deployment    
           uses: Azure/k8s-deploy@v5
           with:
