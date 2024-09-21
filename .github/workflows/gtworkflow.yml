@@ -80,6 +80,10 @@ jobs:
                 tags: rigaacr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
+      permissions:
+        id-token: write
+        contents: read
+        actions: read
       steps:
         - name: Repo Checkout
           uses: actions/checkout@v4
@@ -107,6 +111,6 @@ jobs:
         
               private-cluster: true
               manifests: |
-                /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests
+                dir/manifests
               images: |
                 rigaacr.azurecr.io/flaskapp:latest
