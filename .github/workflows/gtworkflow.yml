@@ -111,6 +111,6 @@ jobs:
         
               private-cluster: true
               manifests: |
-                dir/manifests
+                manifests/*yml
               images: |
                 rigaacr.azurecr.io/flaskapp:latest
