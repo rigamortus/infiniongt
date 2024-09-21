@@ -42,3 +42,20 @@ jobs:
             - name: Teraform Apply
               run: terraform apply infraplan
               working-directory: tercluster/
+    docker_stage:
+      runs-on: ubuntu-latest
+      steps:
+            - name: Repo Checkout
+              uses: actions/checkout@v4
+            - name: Login to Azure
+              uses: azure/login@v2
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            - name: Build and Push
+              uses: docker/build-push-action@v6
+              with:
+                context: ./msdocs-python-django-webapp-quickstart 
+                push: true
+                tags: rigaacr.azurecr.io/flaskapp:latest
