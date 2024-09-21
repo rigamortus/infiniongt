@@ -69,11 +69,13 @@ jobs:
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                 subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             - name: Login to ACR
-              uses: azure/docker-login@v2
-              with:
-                login-server: 'rigaacr.azurecr.io' # default: index.docker.io
-                # username: 'rigamortus'
-                # password: '${{ secrets.ACR_PASS }}'
+              run: |
+                az acr login -n rigaacr
+              # uses: azure/docker-login@v2
+              # with:
+              #   login-server: 'rigaacr.azurecr.io' # default: index.docker.io
+              #   # username: 'rigamortus'
+              #   # password: '${{ secrets.ACR_PASS }}'
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
