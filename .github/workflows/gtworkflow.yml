@@ -101,19 +101,6 @@ jobs:
         - name: Create Vault Secret
           run: |
             az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
-        - name: Deployment    
-          uses: Azure/k8s-deploy@v4
-          with:
-              resource-group: myrg
-              name: my-aks
-              action: deploy
-              strategy: basic
-        
-              private-cluster: true
-              manifests: |
-                  /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/deploying.yml
-                  /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/ing.yml
-                  /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/secretclass.yml
-                  /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/svc.yml
-              images: |
-                rigaacr.azurecr.io/flaskapp:latest
+        - name: Deployment
+          run: |
+            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml
