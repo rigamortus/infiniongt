@@ -2,6 +2,19 @@ name: Python App on Azure Kubernetes Service
 
 on:
     workflow_dispatch:
+      inputs:
+        APPLY:
+          type: choice
+          options:
+            - 'yes'
+            - 'no'
+          required: true
+        DESTROY:
+          type: choice
+          options:
+            - 'yes'
+            - 'no'
+          required: false
     push:
         branches: [ main ]
         paths-ignore: 'README.md'
@@ -13,6 +26,7 @@ permissions:
 jobs:
     terraform_infrastructure:
         runs-on: ubuntu-latest
+        if: ${{ github.event.inputs.APPLY == 'yes' }}
         steps:
             - name: Repository Checkout
               uses: actions/checkout@v4
