@@ -111,6 +111,9 @@ jobs:
         
               private-cluster: true
               manifests: |
-                manifests/*yml
+                manifests/deploying.yml
+                manifests/ing.yml
+                manifests/secretclass.yml
+                manifests/svc.yml
               images: |
                 rigaacr.azurecr.io/flaskapp:latest
