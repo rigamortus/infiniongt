@@ -37,7 +37,7 @@ jobs:
                                -backend-config="client_secret=${{ env.client_secret }}" \
                                -backend-config="tenant_id=${{ env.tenant_id }}" \
                                -backend-config="subscription_id=${{ env.subscription_id }}"
-                terraform plan | tee infraplan
+                terraform plan -out infraplan
               working-directory: tercluster/
             - name: Teraform Apply
               run: terraform apply infraplan
