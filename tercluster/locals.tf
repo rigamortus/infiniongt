@@ -130,9 +130,12 @@ resource "azurerm_container_registry" "acr" {
   name                          = "rigaacr"
   resource_group_name           = "myrg"
   location                      = "north europe"
-  sku                           = "Basic"
+  sku                           = "Premium"
   admin_enabled                 = false
-  #public_network_access_enabled = false
+  public_network_access_enabled = false
+  network_rule_set {
+    default_action      = "Deny"
+  }
 }
 
 
