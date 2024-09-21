@@ -182,8 +182,8 @@ resource "azurerm_key_vault_access_policy" "aks_access" {
 
   # Specify the permissions for secrets
   secret_permissions = [
-    "get",
-    "list"
+    "Get",
+    "List"
   ]
 }
 
