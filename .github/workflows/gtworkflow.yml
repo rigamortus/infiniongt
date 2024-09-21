@@ -22,11 +22,21 @@ jobs:
                 client-id: ${{ secrets.AZURE_CLIENT_ID }}
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
                 subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            - name: Parse Azure Credentials
+              id: parse_creds
+              run: |
+                echo "client_id=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientId)" >> $GITHUB_ENV
+                echo "client_secret=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .clientSecret)" >> $GITHUB_ENV
+                echo "tenant_id=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .tenantId)" >> $GITHUB_ENV
+                echo "subscription_id=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r .subscriptionId)" >> $GITHUB_ENV
             - name: Setup terraform
               uses: hashicorp/setup-terraform@v3
             - name: Terraform Init & Plan
               run: |
-                terraform init -backend-config="${{ secrets.AZURE_CREDENTIALS }}"
+                terraform init -backend-config="client_id=${{ env.client_id }}" \
+                               -backend-config="client_secret=${{ env.client_secret }}" \
+                               -backend-config="tenant_id=${{ env.tenant_id }}" \
+                               -backend-config="subscription_id=${{ env.subscription_id }}"
                 terraform plan | tee infraplan
               working-directory: tercluster/
             - name: Teraform Apply
