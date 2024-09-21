@@ -96,7 +96,7 @@ jobs:
             cluster-name: 'my-aks'
         - name: Create Vault Secret
           run: |
-            az keyvault secret set --name SECRET_KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
+            az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
         - name: Install Secret Store CSI
           run: |
             az aks enable-addons --addons azure-keyvault-secrets-provider --name my-aks --resource-group myrg
