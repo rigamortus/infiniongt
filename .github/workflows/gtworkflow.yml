@@ -40,5 +40,5 @@ jobs:
                 terraform plan | tee infraplan
               working-directory: tercluster/
             - name: Teraform Apply
-              run: terraform apply "infraplan"
+              run: terraform apply infraplan
               working-directory: tercluster/
