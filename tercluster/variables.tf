@@ -16,15 +16,15 @@ variable "nsg_name" {
 }
 
 variable "kv_private_dns_zone" {
-  default = "mydns"
+  default = "mydns.privatelink.azure.com"
 }
 
 variable "acr_dns" {
-  default = "myacr"
+  default = "myacrdns.privatelink.azure.com"
 }
 
 variable "key_vault_name" {
-  default = "mykeyvault"
+  default = "myrigamortuskeyvault"
 }
 
 variable "key_vault_endpoint" {

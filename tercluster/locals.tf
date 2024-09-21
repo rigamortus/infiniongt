@@ -133,10 +133,6 @@ resource "azurerm_container_registry" "acr" {
   sku                           = "Basic"
   admin_enabled                 = false
   public_network_access_enabled = false
-  network_rule_set {
-    default_action = "Deny"
-  }
-
 }
 
 
