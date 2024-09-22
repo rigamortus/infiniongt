@@ -25,10 +25,10 @@ variable "config" {
       identity = object({
         type = string
       })
-      ingressApplicationGateway = object({
-        gatewayName = string
-        subnetId    = string
-      })
+      # ingressApplicationGateway = object({
+      #   gatewayName = string
+      #   subnetId    = string
+      # })
       default_node_pool = object({
         name       = string
         node_count = string
