@@ -90,6 +90,7 @@ resource "azurerm_key_vault" "key_vault" {
     default_action             = "Deny"
     bypass                     = "AzureServices"
     virtual_network_subnet_ids = [azurerm_subnet.endpoint.id]
+    ip_rules = ["4.245.217.88"]
   }
 
   access_policy {
@@ -102,6 +103,7 @@ resource "azurerm_key_vault" "key_vault" {
 
     secret_permissions = [
       "Get",
+      "Set"
     ]
 
     storage_permissions = [
