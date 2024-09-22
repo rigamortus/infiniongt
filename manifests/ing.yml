@@ -7,7 +7,6 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: davidcloud.xyz
     http:
       paths:
       - path: /
@@ -15,5 +14,6 @@ spec:
         backend:
           service:
             name: flask-svc
+            namespace: default
             port:
               number: 5000
