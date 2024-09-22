@@ -80,6 +80,7 @@ jobs:
                 tags: rigaacr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
+      needs: terraform_infrastructure
       permissions:
         id-token: write
         contents: read
