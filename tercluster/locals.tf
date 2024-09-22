@@ -49,20 +49,20 @@ resource "azurerm_network_security_group" "subnet_nsg" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "subassociate" {
-  subnet_id                 = azurerm_subnet.my_subnet.id
-  network_security_group_id = azurerm_network_security_group.subnet_nsg.id
-}
+# resource "azurerm_subnet_network_security_group_association" "subassociate" {
+#   subnet_id                 = azurerm_subnet.my_subnet.id
+#   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
+# }
 
-resource "azurerm_subnet_network_security_group_association" "subassociate2" {
-  subnet_id                 = azurerm_subnet.endpoint.id
-  network_security_group_id = azurerm_network_security_group.subnet_nsg.id
-}
+# resource "azurerm_subnet_network_security_group_association" "subassociate2" {
+#   subnet_id                 = azurerm_subnet.endpoint.id
+#   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
+# }
 
-resource "azurerm_subnet_network_security_group_association" "subassociate3" {
-  subnet_id                 = azurerm_subnet.appgw.id
-  network_security_group_id = azurerm_network_security_group.subnet_nsg.id
-}
+# resource "azurerm_subnet_network_security_group_association" "subassociate3" {
+#   subnet_id                 = azurerm_subnet.appgw.id
+#   network_security_group_id = azurerm_network_security_group.subnet_nsg.id
+# }
 
 resource "azurerm_private_dns_zone" "key_vault_dns" {
   name                = var.kv_private_dns_zone
