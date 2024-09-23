@@ -29,16 +29,27 @@ spec:
           limits:
             memory: 128Mi
             cpu: "0.1"
-        env:
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: my-secret
-              key: SECRET_KEY
-        - name: DJANGO_ALLOWED_HOSTS
-          valueFrom:
-            configMapKeyRef:
-              name: django-config
-              key: ALLOWED_HOSTS
-        - name: ALLOWED_HOSTS
-          value: '["48.209.176.167"]'
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-keyvault-secrets"
+        # env:
+        # - name: SECRET_KEY
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: my-secret
+        #       key: SECRET_KEY
+        # - name: DJANGO_ALLOWED_HOSTS
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: django-config
+        #       key: ALLOWED_HOSTS
+        # - name: ALLOWED_HOSTS
+        #   value: '["48.209.176.167"]'
