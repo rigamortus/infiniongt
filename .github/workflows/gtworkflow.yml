@@ -105,4 +105,6 @@ jobs:
             az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
         - name: Deployment
           run: |
-            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml
+            for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
+              kubectl apply -f "$file"
+            done
