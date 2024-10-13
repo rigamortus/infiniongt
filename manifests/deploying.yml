@@ -43,6 +43,12 @@ spec:
         - name: secrets-store01-inline
           mountPath: "/mnt/secrets-store"
           readOnly: true
+        - name: temp-storage
+          mountPath: /tmp
+        - name: var-tmp-storage
+          mountPath: /var/tmp
+        - name: usr-tmp-storage
+          mountPath: /usr/tmp
       volumes:
         - name: secrets-store01-inline
           csi:
@@ -50,6 +56,12 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "azure-keyvault-secrets"
+        - name: temp-storage
+          emptyDir: {}
+        - name: var-tmp-storage
+          emptyDir: {}
+        - name: usr-tmp-storage
+          emptyDir: {}
         # env:
         # - name: SECRET_KEY
         #   valueFrom:
