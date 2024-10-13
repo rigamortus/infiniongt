@@ -80,6 +80,11 @@ jobs:
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                with:
+                args: >
+                  -Dsonar.projectKey=rigamortus_infiniongt
+                  -Dsonar.organization=rigamortus
+                  -Dsonar.host.url=https://sonarcloud.io
             - name: Login to ACR
               run: |
                 az acr login -n rigaacr
