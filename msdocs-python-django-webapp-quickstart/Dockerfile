@@ -4,7 +4,7 @@ FROM python:${PYTHON_VERSION}-alpine3.19 AS base
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 #ENV DJANGO_SETTINGS_MODULE=quickstartproject.production
-
+RUN apk update && apk add --no-cache strace libcap gcc musl-dev
 WORKDIR /app
 
 ARG UID=10001

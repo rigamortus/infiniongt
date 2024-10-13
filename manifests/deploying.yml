@@ -29,6 +29,16 @@ spec:
           limits:
             memory: 128Mi
             cpu: "0.1"
+        securityContext:
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - NET_BIND_SERVICE
+              - CHOWN
+          allowPrivilegeEscalation: false
+          runAsUser: 1001
+          readOnlyRootFilesystem: true
         volumeMounts:
         - name: secrets-store01-inline
           mountPath: "/mnt/secrets-store"
