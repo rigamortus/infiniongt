@@ -98,7 +98,7 @@ jobs:
                 SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
               with:
                 image: docker.io/flaskapp:v1
-                args: --file=Dockerfile
+                args: --file=/msdocs-python-django-webapp-quickstart/Dockerfile
               continue-on-error: false
             - name: Build and Push
               uses: docker/build-push-action@v6
