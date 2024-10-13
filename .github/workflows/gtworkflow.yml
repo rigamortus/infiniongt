@@ -126,7 +126,7 @@ jobs:
             cluster-name: 'my-aks'
         - name: Create Vault Secret
           run: |
-            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 20.234.65.150
+            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.217.88
             az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
         - name: Deployment
           run: |
