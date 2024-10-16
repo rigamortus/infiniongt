@@ -27,6 +27,7 @@ spec:
         - containerPort: 5000
         resources:
           limits:
+            ephemeral-storage: "0.1Gi"
             memory: 128Mi
             cpu: "0.1"
         securityContext:
@@ -38,7 +39,12 @@ spec:
               - CHOWN
           allowPrivilegeEscalation: false
           runAsUser: 1001
+          runAsNonRoot: true
+          runAsGroup: 1001
+          pidsLimit: 100
           readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - name: secrets-store01-inline
           mountPath: "/mnt/secrets-store"
