@@ -138,12 +138,17 @@ jobs:
         - name: Create Vault Secret
           run: |
             az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.217.88
-            az keyvault secret set --name SECRET-KEY --vault-name myrigamortuskeyvault --value ${{ secrets.VAULT }}
+            az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
+            echo "TENANT_ID=$(az account show --query "tenantId" -o tsv) >> $GITHUB_ENV"
         - name: Deployment
           run: |
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               kubectl apply -f "$file"
             done
+          env:
+            KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
+            USER_ASSIGNED_IDENTITY_ID: ${{ env.USER_ASSIGNED_IDENTITY_ID }}
+            TENANT_ID: ${{ env.TENANT_ID }}
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}

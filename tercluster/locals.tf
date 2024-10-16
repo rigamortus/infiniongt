@@ -134,9 +134,9 @@ resource "azurerm_container_registry" "acr" {
   location                      = "north europe"
   sku                           = "Premium"
   admin_enabled                 = false
-  public_network_access_enabled = true
+  public_network_access_enabled = false
   network_rule_set {
-    default_action      = "Allow"
+    default_action      = "Deny"
   }
 }
 
@@ -144,6 +144,13 @@ resource "azurerm_container_registry" "acr" {
 resource "azurerm_private_dns_zone_virtual_network_link" "acr_private_dns_zone_virtual_network_link" {
   name                  = "my-vnet-link"
   private_dns_zone_name = azurerm_private_dns_zone.acr_dns.name
+  resource_group_name   = "myrg"
+  virtual_network_id    = azurerm_virtual_network.myvnet.id
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "key_vault_dns_zone_virtual_network_link" {
+  name                  = "kv-vnet-link"
+  private_dns_zone_name = azurerm_private_dns_zone.key_vault_dns.name
   resource_group_name   = "myrg"
   virtual_network_id    = azurerm_virtual_network.myvnet.id
 }
