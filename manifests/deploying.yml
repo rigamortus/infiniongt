@@ -55,6 +55,7 @@ spec:
           mountPath: /var/tmp
         - name: usr-tmp-storage
           mountPath: /usr/tmp
+      automountServiceAccountToken: false
       volumes:
         - name: secrets-store01-inline
           csi:
