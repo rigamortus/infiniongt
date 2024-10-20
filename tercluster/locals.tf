@@ -137,6 +137,7 @@ resource "azurerm_container_registry" "acr" {
   public_network_access_enabled = false
   network_rule_set {
     default_action      = "Deny"
+    ip_rule = [ "4.245.216.59" ]
   }
 
 }
