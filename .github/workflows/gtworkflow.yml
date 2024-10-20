@@ -71,7 +71,7 @@ jobs:
               id: terraform
               run: |
                 terraform apply infraplan
-                echo "USER_ASSIGNED_IDENTITY_ID=$(terraform output -json module.clusters.kubelet_identity | jq -r '.my-aks')" >> $GITHUB_OUTPUT
+                echo "USER_ASSIGNED_IDENTITY_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep client_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
               working-directory: tercluster/
     docker_stage:
       runs-on: ubuntu-latest

@@ -138,9 +138,8 @@ resource "azurerm_container_registry" "acr" {
   network_rule_set {
     default_action      = "Deny"
   }
+
 }
-
-
 resource "azurerm_private_dns_zone_virtual_network_link" "acr_private_dns_zone_virtual_network_link" {
   name                  = "my-vnet-link"
   private_dns_zone_name = azurerm_private_dns_zone.acr_dns.name
