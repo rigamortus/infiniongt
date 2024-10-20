@@ -90,7 +90,7 @@ resource "azurerm_key_vault" "key_vault" {
     default_action             = "Deny"
     bypass                     = "AzureServices"
     virtual_network_subnet_ids = [azurerm_subnet.endpoint.id]
-    ip_rules = ["4.245.217.88"]
+    ip_rules                   = ["4.245.217.88"]
   }
 
   access_policy {
@@ -136,8 +136,11 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled                 = false
   public_network_access_enabled = false
   network_rule_set {
-    default_action      = "Deny"
-    ip_rule = [ "4.245.216.59" ]
+    default_action = "Deny"
+    ip_rule {
+      action   = "Allow"
+      ip_range = "4.245.216.59"
+    }
   }
 
 }
