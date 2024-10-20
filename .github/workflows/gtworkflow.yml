@@ -38,6 +38,8 @@ permissions:
 jobs:
     terraform_infrastructure:
         runs-on: ubuntu-latest
+        outputs:
+          kubelet: ${{ steps.terraform.outputs.USER_ASSIGNED_IDENTITY_ID }}
         if: ${{ github.event.inputs.APPLY == 'yes' }}
         steps:
             - name: Repository Checkout
@@ -66,7 +68,10 @@ jobs:
                 terraform plan -out infraplan
               working-directory: tercluster/
             - name: Teraform Apply
-              run: terraform apply infraplan
+              id: terraform
+              run: |
+                terraform apply infraplan
+                echo "USER_ASSIGNED_IDENTITY_ID=$(terraform output -raw kubelet_identity)" >> $GITHUB_OUTPUT
               working-directory: tercluster/
     docker_stage:
       runs-on: ubuntu-latest
@@ -114,7 +119,7 @@ jobs:
                 tags: rigaacr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
-      needs: docker_stage
+      needs: [docker_stage, terraform_infrastructure]
       if: ${{ github.event.inputs.DEPLOY == 'yes' }}
       permissions:
         id-token: write
@@ -139,7 +144,7 @@ jobs:
           run: |
             az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.217.88
             az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
-            echo "TENANT_ID=$(az account show --query "tenantId" -o tsv) >> $GITHUB_ENV"
+            echo "TENANT_ID=$(az account show --query "tenantId" -o tsv)" >> $GITHUB_ENV
         - name: Deployment
           run: |
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
@@ -147,7 +152,7 @@ jobs:
             done
           env:
             KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
-            USER_ASSIGNED_IDENTITY_ID: ${{ env.USER_ASSIGNED_IDENTITY_ID }}
+            USER_ASSIGNED_IDENTITY_ID: ${{ needs.terraform_infrastructure.outputs.kubelet }}
             TENANT_ID: ${{ env.TENANT_ID }}
     terraform_destroy:
       runs-on: ubuntu-latest
