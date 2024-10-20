@@ -71,7 +71,7 @@ jobs:
               id: terraform
               run: |
                 terraform apply infraplan
-                echo "USER_ASSIGNED_IDENTITY_ID=$(terraform output -raw kubelet_identity)" >> $GITHUB_OUTPUT
+                echo "USER_ASSIGNED_IDENTITY_ID=$(terraform output -raw module.clusters.kubelet_identity)" >> $GITHUB_OUTPUT
               working-directory: tercluster/
     docker_stage:
       runs-on: ubuntu-latest
