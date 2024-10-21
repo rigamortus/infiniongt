@@ -142,7 +142,7 @@ jobs:
             cluster-name: 'my-aks'
         - name: Create Vault Secret
           run: |
-            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.217.88
+            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.216.59
             az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
             echo "TENANT_ID=$(az account show --query "tenantId" -o tsv)" >> $GITHUB_ENV
         - name: Deployment
