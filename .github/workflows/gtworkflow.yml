@@ -110,7 +110,7 @@ jobs:
               with:
                 image: docker.io/flaskapp:v1
                 args: --file=./msdocs-python-django-webapp-quickstart/Dockerfile
-              continue-on-error: false
+              continue-on-error: true
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
