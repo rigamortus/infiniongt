@@ -148,9 +148,9 @@ jobs:
         - name: Deployment
           run: |
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
-              sed -i "s|\${{ vars.KEYVAULT_NAME }}|${{ vars.KEYVAULT_NAME }}|g" "$file"
-              sed -i "s|\${{ needs.terraform_infrastructure.outputs.kubelet }}|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
-              sed -i "s|\${{ env.TENANT_ID }}|${{ env.TENANT_ID }}|g" "$file"
+              sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
+              sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
+              sed -i "s|TENANT_ID|${{ env.TENANT_ID }}|g" "$file"
               kubectl apply -f "$file"
             done
           env:
