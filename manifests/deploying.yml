@@ -29,7 +29,7 @@ spec:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: my-secret      # This must match the secretName in the SecretProviderClass
+              name: my-secret
               key: SECRET_KEY
         resources:
           limits:
