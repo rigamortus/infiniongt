@@ -129,7 +129,7 @@ resource "azurerm_private_endpoint" "key_vault_endpoint" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                          = "rigaacr"
+  name                          = "rigamacr"
   resource_group_name           = "myrg"
   location                      = "north europe"
   sku                           = "Premium"
