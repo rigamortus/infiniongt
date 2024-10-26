@@ -119,7 +119,7 @@ jobs:
                 tags: rigamacr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
-      needs: [terraform_infrastructure, docker_stage]
+      needs: [terraform_infrastructure] #docker_stage]
       if: ${{ github.event.inputs.DEPLOY == 'yes' }}
       permissions:
         id-token: write
@@ -145,7 +145,7 @@ jobs:
             az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.216.59
             az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
             echo "TENANT_ID=$(az account show --query "tenantId" -o tsv)" >> $GITHUB_ENV
-        - name: Set DNS Records
+        - name: Get DNS & IP Records
           run: |
             acrip1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].ipAddresses" -o tsv)
             acrip2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].ipAddresses" -o tsv)
@@ -153,6 +153,9 @@ jobs:
             kvdns=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[].fqdn" -o tsv)
             acrdns1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].fqdn" -o tsv)
             acrdns2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].fqdn" -o tsv)
+            az network private-dns zone create -g MyResourceGroup -n $kvdns --no-wait false
+            az network private-dns zone create -g MyResourceGroup -n $acrdns1 --no-wait false
+            az network private-dns zone create -g MyResourceGroup -n $acrdns2 --no-wait false
             az network private-dns record-set a add-record -g myrg -z $acrdns1 -n acrsetuno -a $acrip1
             az network private-dns record-set a add-record -g myrg -z $acrdns2 -n acrsetdos -a $acrip2
             az network private-dns record-set a add-record -g myrg -z $kvdns -n kvset -a $kvip
