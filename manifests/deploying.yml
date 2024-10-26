@@ -36,6 +36,8 @@ spec:
             ephemeral-storage: "10Mi"
             memory: 128Mi
             cpu: "0.1"
+          requests:
+            cpu: 0.025m 
         securityContext:
           capabilities:
             drop:
