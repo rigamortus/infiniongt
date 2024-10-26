@@ -153,9 +153,6 @@ jobs:
             kvdns=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[].fqdn" -o tsv)
             acrdns1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].fqdn" -o tsv)
             acrdns2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].fqdn" -o tsv)
-            az network private-dns zone create -g myrg -n $kvdns --no-wait false
-            az network private-dns zone create -g myrg -n $acrdns1 --no-wait false
-            az network private-dns zone create -g myrg -n $acrdns2 --no-wait false
             az network private-dns record-set a add-record -g myrg -z $acrdns1 -n acrsetuno -a $acrip1
             az network private-dns record-set a add-record -g myrg -z $acrdns2 -n acrsetdos -a $acrip2
             az network private-dns record-set a add-record -g myrg -z $kvdns -n kvset -a $kvip
