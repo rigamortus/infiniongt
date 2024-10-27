@@ -98,7 +98,7 @@ jobs:
                   -Dsonar.host.url=https://sonarcloud.io
             - name: Login to ACR
               run: |
-                az acr login -n rigamacr
+                az acr login -n rigamoacr
             - name: Build Image for Testing
               run: |
                 docker build -t flaskapp:v1 .
