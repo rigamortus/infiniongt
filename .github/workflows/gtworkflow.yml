@@ -169,7 +169,6 @@ jobs:
         # kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
         - name: Deployment
           run: |
-            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
               sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
