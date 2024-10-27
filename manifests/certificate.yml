@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: davidcloud-tls
+  namespace: default
+spec:
+  secretName: davidcloud-tls  # Secret where the certificate will be stored
+  issuerRef:
+    name: letsencrypt-prod   # or letsencrypt-prod for production
+    kind: ClusterIssuer
+  dnsNames:
+  - mydavidcloud.xyz                 # Replace with your domain
