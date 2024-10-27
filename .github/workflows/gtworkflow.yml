@@ -165,6 +165,7 @@ jobs:
             az network private-dns link vnet create -g myrg -n acrone -z $acrdns1 -v my-vnet -e False
             az network private-dns link vnet create -g myrg -n acrtwo -z $acrdns2 -v my-vnet -e False
             az network private-dns link vnet create -g myrg -n kvone -z $kvdns -v my-vnet -e False
+            az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
         - name: Deployment
           run: |
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml
