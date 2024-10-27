@@ -116,7 +116,7 @@ jobs:
               with:
                 context: ./msdocs-python-django-webapp-quickstart 
                 push: true
-                tags: rigamacr.azurecr.io/flaskapp:latest
+                tags: rigamoacr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
       needs: [terraform_infrastructure] #docker_stage]
