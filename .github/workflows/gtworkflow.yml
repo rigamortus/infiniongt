@@ -145,36 +145,36 @@ jobs:
             az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 4.245.216.59
             az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
             echo "TENANT_ID=$(az account show --query "tenantId" -o tsv)" >> $GITHUB_ENV
-        - name: Get DNS & IP Records
-          run: |
-            acrip1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].ipAddresses" -o tsv)
-            acrip2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].ipAddresses" -o tsv)
-            kvip=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[0].ipAddresses" -o tsv)
-            kvdns=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[].fqdn" -o tsv)
-            acrdns1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].fqdn" -o tsv)
-            acrdns2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].fqdn" -o tsv)
-            az network private-dns zone create -g myrg -n $acrdns1
-            az network private-dns zone wait --created -g myrg -n $acrdns1
-            az network private-dns zone create -g myrg -n $acrdns2
-            az network private-dns zone wait --created -g myrg -n $acrdns2
-            az network private-dns zone create -g myrg -n $kvdns
-            az network private-dns zone wait --created -g myrg -n $kvdns
-            az network private-dns record-set a add-record -g myrg -z $acrdns1 -n "@" -a $acrip1
-            az network private-dns record-set a add-record -g myrg -z $acrdns2 -n "@" -a $acrip2
-            az network private-dns record-set a add-record -g myrg -z $kvdns -n "@" -a $kvip
-            az network private-dns link vnet create -g myrg -n acrone -z $acrdns1 -v my-vnet -e False
-            az network private-dns link vnet create -g myrg -n acrtwo -z $acrdns2 -v my-vnet -e False
-            az network private-dns link vnet create -g myrg -n kvone -z $kvdns -v my-vnet -e False
-            az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
+        # - name: Get DNS & IP Records
+        #   run: |
+        #     acrip1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].ipAddresses" -o tsv)
+        #     acrip2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].ipAddresses" -o tsv)
+        #     kvip=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[0].ipAddresses" -o tsv)
+        #     kvdns=$(az network private-endpoint show --name mykeyendpoint --resource-group myrg --query "customDnsConfigs[].fqdn" -o tsv)
+        #     acrdns1=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[0].fqdn" -o tsv)
+        #     acrdns2=$(az network private-endpoint show --name myacrendpoint --resource-group myrg --query "customDnsConfigs[1].fqdn" -o tsv)
+        #     az network private-dns zone create -g myrg -n $acrdns1
+        #     az network private-dns zone wait --created -g myrg -n $acrdns1
+        #     az network private-dns zone create -g myrg -n $acrdns2
+        #     az network private-dns zone wait --created -g myrg -n $acrdns2
+        #     az network private-dns zone create -g myrg -n $kvdns
+        #     az network private-dns zone wait --created -g myrg -n $kvdns
+        #     az network private-dns record-set a add-record -g myrg -z $acrdns1 -n "@" -a $acrip1
+        #     az network private-dns record-set a add-record -g myrg -z $acrdns2 -n "@" -a $acrip2
+        #     az network private-dns record-set a add-record -g myrg -z $kvdns -n "@" -a $kvip
+        #     az network private-dns link vnet create -g myrg -n acrone -z $acrdns1 -v my-vnet -e False
+        #     az network private-dns link vnet create -g myrg -n acrtwo -z $acrdns2 -v my-vnet -e False
+        #     az network private-dns link vnet create -g myrg -n kvone -z $kvdns -v my-vnet -e False
+        #     az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
         - name: Deployment
           run: |
-            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
               sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
               sed -i "s|TENANT_ID|${{ env.TENANT_ID }}|g" "$file"
               kubectl apply -f "$file"
             done
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml
           env:
             KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
             USER_ASSIGNED_IDENTITY_ID: ${{ needs.terraform_infrastructure.outputs.kubelet }}
