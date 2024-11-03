@@ -171,15 +171,20 @@ jobs:
             az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
-              sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
-              sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
-              sed -i "s|TENANT_ID|${{ env.TENANT_ID }}|g" "$file"
-              kubectl apply -f "$file" --validate=false
+              if [[ "$(basename "$file")" != "certificate.yml" ]]; then
+                sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
+                sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
+                sed -i "s|TENANT_ID|${{ env.TENANT_ID }}|g" "$file"
+                kubectl apply -f "$file" --validate=false
+              fi
             done
           env:
             KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
             USER_ASSIGNED_IDENTITY_ID: ${{ needs.terraform_infrastructure.outputs.kubelet }}
             TENANT_ID: ${{ env.TENANT_ID }}
+        - name: Apply Cerftificate.yml
+          run: |
+            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}
