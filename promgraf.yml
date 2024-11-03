@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Update with your issuer
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - grafana.mydavidcloud.xyz
+      secretName: grafana-tls  # Name of the secret to store the certificate
+  rules:
+    - host: grafana.mydavidcloud.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 80
