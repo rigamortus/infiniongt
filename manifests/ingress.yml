@@ -7,10 +7,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - mydavidcloud.xyz
+      - davidcloud.site
       secretName: davidcloud-tls
   rules:
-  - host: mydavidcloud.xyz
+  - host: davidcloud.site
     http:
       paths:
       - path: /

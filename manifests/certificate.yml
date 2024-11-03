@@ -9,4 +9,4 @@ spec:
     name: letsencrypt-prod   # or letsencrypt-prod for production
     kind: ClusterIssuer
   dnsNames:
-  - mydavidcloud.xyz                 # Replace with your domain
+  - davidcloud.site                # Replace with your domain
