@@ -119,7 +119,7 @@ jobs:
                 tags: rigamoracr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
-      needs: [terraform_infrastructure, docker_stage]
+      needs: [terraform_infrastructure] #docker_stage]
       if: ${{ github.event.inputs.DEPLOY == 'yes' }}
       permissions:
         id-token: write
@@ -169,6 +169,7 @@ jobs:
         - name: Deployment
           run: |
             az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
+            kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
               sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
