@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: flask-pod
-        image: rigamoacr.azurecr.io/flaskapp:latest
+        image: rigamoracr.azurecr.io/flaskapp:latest
         ports:
         - containerPort: 5000
         env:
