@@ -35,9 +35,9 @@ spec:
           limits:
             ephemeral-storage: "10Mi"
             memory: 128Mi
-            cpu: "0.1"
+            cpu: "200m"
           requests:
-            cpu: 0.025m 
+            cpu: 5m 
         securityContext:
           capabilities:
             drop:
@@ -77,16 +77,3 @@ spec:
           emptyDir: {}
         - name: usr-tmp-storage
           emptyDir: {}
-        # env:
-        # - name: SECRET_KEY
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: my-secret
-        #       key: SECRET_KEY
-        # - name: DJANGO_ALLOWED_HOSTS
-        #   valueFrom:
-        #     configMapKeyRef:
-        #       name: django-config
-        #       key: ALLOWED_HOSTS
-        # - name: ALLOWED_HOSTS
-        #   value: '["48.209.176.167"]'

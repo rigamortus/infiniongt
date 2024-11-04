@@ -171,7 +171,7 @@ jobs:
             az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
-              if [[ "$(basename "$file")" != "certificate.yml" ]]; then
+              if [[ "$(basename "$file")" != "certificate.yml" ]] && [[ "$(basename "$file")" != "issuer.yml" ]]; then
                 sed -i "s|KEYVAULT_NAME|${{ vars.KEYVAULT_NAME }}|g" "$file"
                 sed -i "s|kubelet|${{ needs.terraform_infrastructure.outputs.kubelet }}|g" "$file"
                 sed -i "s|TENANT_ID|${{ env.TENANT_ID }}|g" "$file"
@@ -182,9 +182,15 @@ jobs:
             KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
             USER_ASSIGNED_IDENTITY_ID: ${{ needs.terraform_infrastructure.outputs.kubelet }}
             TENANT_ID: ${{ env.TENANT_ID }}
-        - name: Apply Cerftificate.yml
+        - name: Apply Cerftificate & Issuer
           run: |
             kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml
+        - name: Prometheus Helm
+          run: |
+            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+            helm repo update
+            helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+            kubectl --namespace monitoring get pods -l "release=prometheus"
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}
