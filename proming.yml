@@ -1,19 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: prometheus-ingress
+  name: prom-ingress
   namespace: monitoring
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: azure/application-gateway
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - prometheus.mydavidcloud.xyz
+        - prometheus.davidcloud.site
       secretName: prometheus-tls
   rules:
-    - host: prometheus.mydavidcloud.xyz  # Replace with your desired domain for Prometheus
+    - host: prometheus.davidcloud.site  # Replace with your desired domain for Prometheus
       http:
         paths:
           - path: /

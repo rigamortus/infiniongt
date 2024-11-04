@@ -119,7 +119,7 @@ jobs:
                 tags: rigamoracr.azurecr.io/flaskapp:latest
     kubernetes_deploy:
       runs-on: [linux, self-hosted]
-      needs: [terraform_infrastructure] #docker_stage]
+      needs: [terraform_infrastructure, docker_stage]
       if: ${{ github.event.inputs.DEPLOY == 'yes' }}
       permissions:
         id-token: write

@@ -4,21 +4,21 @@ metadata:
   name: grafana-ingress
   namespace: monitoring
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Update with your issuer
+    kubernetes.io/ingress.class: azure/application-gateway
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
-  ingressClassName: nginx
   tls:
     - hosts:
-        - grafana.mydavidcloud.xyz
-      secretName: grafana-tls  # Name of the secret to store the certificate
+        - grafana.davidcloud.site
+      secretName: grafana-tls
   rules:
-    - host: grafana.mydavidcloud.xyz
+    - host: grafana.davidcloud.site  # Replace with your desired domain for Prometheus
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: prometheus-grafana
+                name: prometheus-grafana # Your existing Prometheus service name
                 port:
-                  number: 80
+                  number: 80  # Port for Prometheus
