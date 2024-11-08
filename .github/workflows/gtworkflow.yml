@@ -109,8 +109,7 @@ jobs:
                 SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
               with:
                 image: docker.io/flaskapp:v1
-                args: --file=./msdocs-python-django-webapp-quickstart/Dockerfile
-              continue-on-error: true
+                args: --file=./msdocs-python-django-webapp-quickstart/Dockerfile --severity-threshold=medium
             - name: Build and Push
               uses: docker/build-push-action@v6
               with:
@@ -142,7 +141,7 @@ jobs:
             cluster-name: 'my-aks'
         - name: Create Vault Secret
           run: |
-            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address 20.82.144.6
+            az keyvault network-rule add --name myrigamortuskeyvault  --ip-address ${{ vars.VM_IP }}
             az keyvault secret set --name SECRET-KEY --vault-name ${{ vars.KEYVAULT_NAME }} --value ${{ secrets.VAULT }}
             echo "TENANT_ID=$(az account show --query "tenantId" -o tsv)" >> $GITHUB_ENV
         - name: Get DNS & IP Records
@@ -166,9 +165,15 @@ jobs:
             az network private-dns link vnet create -g myrg -n acrtwo -z $acrdns2 -v my-vnet -e False
             az network private-dns link vnet create -g myrg -n kvone -z $kvdns -v my-vnet -e False
         # kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
+        - name: Prometheus Helm
+          run: |
+            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+            helm repo update
+            helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+            kubectl --namespace monitoring get pods -l "release=prometheus"
         - name: Deployment
           run: |
-            az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 10.0.3.0/24
+            az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr ${{ vars.SUBNET }}
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               if [[ "$(basename "$file")" != "certificate.yml" ]] && [[ "$(basename "$file")" != "issuer.yml" ]]; then
@@ -184,13 +189,8 @@ jobs:
             TENANT_ID: ${{ env.TENANT_ID }}
         - name: Apply Cerftificate & Issuer
           run: |
-            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml
-        - name: Prometheus Helm
-          run: |
-            helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-            helm repo update
-            helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
-            kubectl --namespace monitoring get pods -l "release=prometheus"
+            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml --validate=false
+            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/issuer.yml --validate=false
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}
