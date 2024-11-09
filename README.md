@@ -382,7 +382,7 @@ __Query__
 
 
  __Teams Notification__
- ![teams](./images/alernotif.png)
+ ![teams](./images/alertnotif.png)
 
 
 
