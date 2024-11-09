@@ -198,7 +198,16 @@ jobs:
           continue-on-error: true
         - name: DNS Records & Ingress
           run: |
-            ING=$(kubectl get ing python-ingress -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            while true; do
+              ING=$(kubectl get ing python-ingress -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+              if [ $? -eq 0 ]; then
+                echo "Ingress IP retrieved successfully."
+                break
+              else
+                echo "Waiting for ingress IP..."
+                sleep 60
+              fi
+            done
             az network dns zone create -n davidcloud.site -g myrg
             az network dns record-set a add-record -g myrg -z davidcloud.site -n "@" -a $ING
             az network dns record-set a add-record -g myrg -z davidcloud.site -n grafana -a $ING
