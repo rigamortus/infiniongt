@@ -348,15 +348,15 @@ az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 
 ### Kubernetes YAML Manifests
 A deployment with four pod replicas was my choice Kubernetes api-resource type for the application. Crucial details are noted below:
 
-- Deployment with four pod replicas
-- RollingUpdate strategy type with maxUnavailable and maxSurge specified
-- NodeSelector attribute to deploy the pods on my worker nodes
-- Resource limits for CPU and Memory usage
-- Seccomp profile set to RuntimeDefault
-- Restricted capabilities (NET_BIND_SERVICE & CHOWN only)
+- __Deployment__ with four pod replicas
+- __RollingUpdate__ strategy type with maxUnavailable and maxSurge specified
+- __NodeSelector__ attribute to deploy the pods on my worker nodes
+- Resource limits for __CPU__ and __Memory usage__
+- __Seccomp__ profile set to RuntimeDefault
+- Restricted capabilities (__NET_BIND_SERVICE__ & __CHOWN__ only)
 - Disabled privilege escalation
 - Pods are run as nonroot and using an unprivileged user
-- Root volumes set to readOnly
+- Root volumes set to __readOnly__
 - ServiceAccountToken are not automatically mounted
 - Secret value was mounted as an ephemeral volume from the Key Vault on the pods
 
