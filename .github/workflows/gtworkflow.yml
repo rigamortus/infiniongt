@@ -72,6 +72,7 @@ jobs:
               run: |
                 terraform apply infraplan
                 echo "USER_ASSIGNED_IDENTITY_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep client_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
+                echo "KUBE_OBJECT_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep object_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
               working-directory: tercluster/
     docker_stage:
       runs-on: [self-hosted, linux]
@@ -189,8 +190,8 @@ jobs:
             TENANT_ID: ${{ env.TENANT_ID }}
         - name: Apply Cerftificate & Issuer
           run: |
-            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml --validate=false
             kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/issuer.yml --validate=false
+            kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml --validate=false
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}
