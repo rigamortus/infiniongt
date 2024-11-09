@@ -209,7 +209,7 @@ Kubelet application id and object id were also set as outputs to be used in the 
 ```
 
 ### docker_stage
-The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was also used. Using a self-hosted runner enabled image pushing since the ACR was made accessible only within the a private network. 
+The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was used. Using a self-hosted runner enabled image pushing since the ACR was accessible only within the same private network. 
 
 The Dockerfile for the build is detailed below:
 
