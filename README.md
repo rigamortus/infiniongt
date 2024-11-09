@@ -190,7 +190,7 @@ Azure CLI, Helm, Kubectl were pre-installed on my self-hosted runner to enable i
 An OIDC managed identity with Contributor and RBAC Administrator roles was also created. A GitHub Actions secret was created to store the managed identity credentials needed to establish a connection to my Azure subscription.
 
 ### Terraform_Infrastructure Stage
-This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __Ubuntu 22.04__ This stage comprised three run steps using the Azure CLI. and three actions:
+This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __Ubuntu 22.04__. This stage comprised three run steps using the Azure CLI. and three actions:
 - __actions/checkout@v4__: Pulls repository content from my GitHub repository.
 - __azure/login@v2__: Login and establish connection to Azure using the secrets of the OIDC managed identity that was previously created.
 - __hashicorp/setup-terraform@v3__: Sets up Terraform on the runner
