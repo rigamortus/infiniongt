@@ -346,9 +346,9 @@ az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 
     az network dns record-set a add-record -g myrg -z davidcloud.site -n prometheus -a "$ING"
 ```
 ### Kubernetes YAML Manifests
-A deployment with four pod replicas was my choice Kubernetes api-resource type for the application. Crucial details are noted below:
+A deployment with four replicas was my choice Kubernetes api-resource type for the application. Crucial details are noted below:
 
-- __Deployment__ with four pod replicas
+- __Deployment__ with four replicas
 - __RollingUpdate__ strategy type with maxUnavailable and maxSurge specified
 - __NodeSelector__ attribute to deploy the pods on my worker nodes
 - Resource limits for __CPU__ and __Memory usage__
@@ -357,7 +357,7 @@ A deployment with four pod replicas was my choice Kubernetes api-resource type f
 - Disabled privilege escalation
 - Pods are run as nonroot and using an unprivileged user
 - Root volumes set to __readOnly__
-- ServiceAccountToken are not automatically mounted
+- ServiceAccountToken is not automatically mounted
 - Secret value was mounted as an ephemeral volume from the Key Vault on the pods
 
 Other api-resources created include: ClusterIP, SecretProviderClass, Ingress (__python_ingress__, __prometheus ingress__, __grafana ingress__), HorizontalPodAutoscaler, Certificates (LetsEncrypt), and ClusterIssuer.
