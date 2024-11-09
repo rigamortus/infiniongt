@@ -29,7 +29,7 @@ Terrafrom modules were used to create a number of Azure resources for this proje
 
 - __Azure Kubernetes Cluster__ and __Node Pools__: A private AKS cluster with one node pool was used. The cluster was made private to prevent the __apiserver__ from being reachable over the internet. A system-assigned managed identity was also created to enable authentication with my ACR and Key Vault. Azure CNI (which enables pods to obtain IPv4 addresses from my VNet CIDR block) was my choice network plugin type. Nodes were also set to autoscaling.
 
-- __Azure Container Registry__: Private container registry to house the Docker image that will be built. __ACR__ was accessible only by my the IP address of my GitHub Actions self-hosted runner. All other public IP addresses were denied access by default.
+- __Azure Container Registry__: Private container registry to house the Docker image that will be built. __ACR__ was accessible only by the IP address of my GitHub Actions self-hosted runner. All other public IP addresses were denied access by default.
 
 - __Azure Key Vault__: Hosts the secret value required by the application.
 
