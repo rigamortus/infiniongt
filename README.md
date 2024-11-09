@@ -408,8 +408,8 @@ A __terraform_destroy__ stage was added to destroy resources.
 
 ## Conclusion
 The application was accessible via __davidcloud.site__. 
-![app1](./images/Azure App.png)
-![app2](./images/Azure AppTwo.png)
+![app1](./images/AzureApp.png)
+![app2](./images/AzureAppTwo.png)
 
 
 Prometheus & Grafana were also accessible via specified subdomains (__prometheus.davidcloud.site__ and __grafana.davidcloud.site__). 
