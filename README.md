@@ -274,7 +274,7 @@ After the image was built, it was pushed to my ACR image repository using the __
 
 
 ## kubernetes_deploy
-The third and final stage was also ran using my Github Actions self-hosted runner. The private nature of the AKS cluster informed my choice of a self-hosted runner for this stage since the cluster's __apiserver__ is reachable only within the same network.
+The third and final stage was also run using my Github Actions self-hosted runner. The private nature of the AKS cluster informed my choice of a self-hosted runner for this stage since the cluster's __apiserver__ is reachable only within the same network.
 
 ### Notes
 - AKS cluster context was retrieved and set as the current context using the __azure/aks-set-context@v3__ action
