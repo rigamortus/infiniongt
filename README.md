@@ -42,8 +42,7 @@ Terrafrom modules were used to create a number of Azure resources for this proje
 ## Terraform Logic
 A modular approach was adopted using Terraform. A single __env.yaml__ file acts as the singular source of truth for the configuration of each resource. The __env.yaml__ file is decoded using Terraform's __yamldecode__ function and passed as a locals block in my __locals.tf__ file. Terraform were also used to pass values in contexts were resource dependency exists. This approach allowed for easy scalability and modification of resources. A remote state backend using an Azure Blob container was also use to ensure safe locking of Terraform state files.
 
-### Snippet:
-__AKS__:
+### __AKS__ Snippet:
 
 __main.tf__
 ```HCL
@@ -96,7 +95,7 @@ output "kubelet_identity" {
 ```
 
 __variables.tf__
-```
+```HCL
 variable "config" {
   type = object({
     cluster = list(object({
@@ -175,7 +174,7 @@ locals {
 ```
 
 __module.tf__
-```Terraform
+```HCL
 module "clusters" {
   source     = "./modules/clusters"
   config     = local.env.aks-clusters
