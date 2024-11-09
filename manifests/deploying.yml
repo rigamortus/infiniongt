@@ -20,6 +20,8 @@ spec:
       labels:
         app: flask-app
     spec:
+      nodeSelector:
+        agentpool: mypool
       containers:
       - name: flask-pod
         image: rigamoracr.azurecr.io/flaskapp:latest
