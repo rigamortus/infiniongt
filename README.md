@@ -1,15 +1,15 @@
 # Python Application on Azure Kubernetes Service
 
-The aim of this project was to deploy a Python (Django) application on Azure Kubernetes Service. The infrastructure will be setup using Terraform modules and deployed with a GitHub Actions CI/CD pipeline. A Docker image will also be built and pushed to a private Azure Container Registry repository. Monitoring will also be implemented using Prometheus and Grafana, with custom alerts delivered to a Microsoft Teams channel using webhooks.
+The aim of this project was to deploy a Python (Django) application on Azure Kubernetes Service. The infrastructure for the project was setup using Terraform modules and deployed with a GitHub Actions CI/CD pipeline. A Docker image was also be built and pushed to a private Azure Container Registry repository. Monitoring was implemented using Prometheus and Grafana, with custom alerts delivered to a Microsoft Teams channel using webhooks.
 
 ## Application Overview
-The target application was written using the Django framework and can be found [here](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart). For deployment to production, the application requires the generation of a secret key that is to be loaded as an environment variable. The secret key was generated with the command below:
+The target application was written using the Django framework and can be found [here](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart). For deployment to production, the application requires the generation of a secret value that is to be loaded as an environment variable. The secret value was generated with the command below:
 
 ```shell
 python -c 'import secrets; print(secrets.token_hex())'
 ```
 
-Although the above secret is loaded in its original iteration using a __.env__ file, I made the decision to alter the application code slightly and load it on my Kubernetes pods as an environment variable from a secret pulled from the Azure Key Vault. To achieve this,the __settings.py__ file was altered from its original form.
+Although the above secret is loaded in its original iteration using a __.env__ file, I made the decision to alter the application code slightly and load it on my Kubernetes pods as an environment variable from a secret pulled from the Azure Key Vault. To achieve this, the __settings.py__ file was altered from its original form:
 
 __Original Line__
 ```Python
@@ -25,11 +25,11 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 ## Azure Infrastructure
 Terrafrom modules were used to create a number of Azure resources for this project:
 
-- __VNets__ and __Subnets__: An Azure virtual network for my resources. Three subnets were created: __default__ subnet for my AKS cluster, __appgw__ subnet for my __Azure Application Gateway Ingress Controller__, and __privendp__ subnet for private endpoint communication with the Key Vault and ACR.
+- __VNets__ and __Subnets__: An Azure virtual network and three subnets were created: __default__ subnet for my AKS cluster, __appgw__ subnet for my __Azure Application Gateway Ingress Controller__, and __privendp__ subnet for private endpoint communication with my Key Vault and ACR.
 
-- __Azure Kubernetes Cluster__ and __Node Pools__: A private AKS cluster with one node pool was used. The cluster was made private to prevent the __api server__ from being reachable over the internet. System-assigned managed identites were created to enable authentication with my ACR and Key Vault. Azure CNI (which enables the pods to obtain IPv4 addresses from the VNet CIDR block) was my choice network plugin type. Nodes were also set to autoscaling.
+- __Azure Kubernetes Cluster__ and __Node Pools__: A private AKS cluster with one node pool was used. The cluster was made private to prevent the __apiserver__ from being reachable over the internet. A system-assigned managed identity was also created to enable authentication with my ACR and Key Vault. Azure CNI (which enables pods to obtain IPv4 addresses from my VNet CIDR block) was my choice network plugin type. Nodes were also set to autoscaling.
 
-- __Azure Container Registry__: Private container registry to house the Docker image that will be built. __ACR__ was accessible only by my the IP address of my GitHub Actions self-hosted runner. All other public IP addresses were are denied access by default.
+- __Azure Container Registry__: Private container registry to house the Docker image that will be built. __ACR__ was accessible only by my the IP address of my GitHub Actions self-hosted runner. All other public IP addresses were denied access by default.
 
 - __Azure Key Vault__: Hosts the secret value required by the application.
 
@@ -37,10 +37,10 @@ Terrafrom modules were used to create a number of Azure resources for this proje
 
 - __Private Endpoints__: Two private endpoints (one each for ACR and Key Vault) were created to enable private communication with the AKS cluster for image and secret pulling.
 
-- __Role Assignments__: Designate access to the AKS cluster to enable permissions for image and secret pulling.
+- __Role Assignments__: Designate access permissions to the AKS cluster for image and secret pulling.
 
 ## Terraform Logic
-A modular approach was adopted using Terraform. A single __env.yaml__ file acts as the singular source of truth for the configuration of each resource. The __env.yaml__ file is decoded using Terraform's __yamldecode__ function and passed as a locals block in my __locals.tf__ file. Terraform were also used to pass values in contexts were resource dependency exists. This approach allowed for easy scalability and modification of resources. A remote state backend using an Azure Blob container was also use to ensure safe locking of Terraform state files.
+A modular approach was adopted using Terraform. A single __env.yaml__ file acts as the singular source of truth for the configuration of each resource. The __env.yaml__ file is decoded using Terraform's __yamldecode__ function and passed as a locals block in my __locals.tf__ file. Terraform outputs were also used to pass values in contexts were resource dependency exists. This approach allowed for easy scalability and modification of resources. A remote state backend using an Azure Blob container was also uses to ensure safe locking of the Terraform state file.
 
 ### __AKS__ Snippet:
 
@@ -183,21 +183,29 @@ module "clusters" {
 ```
 
 ## GitHub Actions Workflow
-A GitHub Actions CI/CD pipeline was implemented to deploy the application. The pipeline was split into three stages: a __terraform_infrastructure__ stage, a __docker__, and a __kubernetes_deploy__ stage. A elf-hosted runner (VM within the same private network as my cluster) was also configured. 
+A GitHub Actions CI/CD pipeline was implemented to deploy the application. The pipeline was split into three stages: a __terraform_infrastructure__ stage, a __docker__, and a __kubernetes_deploy__ stage. A self-hosted runner (a VM within the same private network as my cluster) was also configured. 
 
-Azure CLI, Helm, Kubectl were installed on my self-hosted runner to enable it run commands in my workflow.
+Azure CLI, Helm, Kubectl were pre-installed on my self-hosted runner to enable it run the commands in my workflow.
 
 An OIDC managed identity with Contributor and RBAC Administrator roles was also created. A GitHub Actions secret was created to store the managed identity credentials needed to establish a connection to my Azure subscription.
 
 ### Terraform_Infrastructure Stage
-This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __Ubuntu 22.04__ This stage comprised three run steps using the Bash/Azure CLI and three actions:
+This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __Ubuntu 22.04__ This stage comprised three run steps using the Azure CLI. and three actions:
 - __actions/checkout@v4__: Pulls repository content from my GitHub repository.
 - __azure/login@v2__: Login and establish connection to Azure using the secrets of the OIDC managed identity that was previously created.
 - __hashicorp/setup-terraform@v3__: Sets up Terraform on the runner
 
 The run steps under this stage parsed the Azure credentials and set them as variables, set up the backend config for the Terraform state files, and apply the Terraform plan file to deploy the infrastructure.
 
-Kubelet application id and object id were also set as outputs to be used in the __kubernetes_deploy__ stage.
+Kubelet application id and object id were also set as outputs to be used in the __kubernetes_deploy__ stage:
+```YAML
+- name: Teraform Apply
+  id: terraform
+  run: |
+    terraform apply infraplan
+    echo "USER_ASSIGNED_IDENTITY_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep client_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
+    echo "KUBE_OBJECT_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep object_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
+  working-directory: tercluster/
 
 ### docker_stage
 The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was also used. Using a self-hosted runner enabled image pushing since the ACR was made accessible only within the a private network. 
