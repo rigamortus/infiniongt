@@ -183,7 +183,7 @@ module "clusters" {
 ```
 
 ## GitHub Actions Workflow
-A GitHub Actions CI/CD pipeline was implemented to deploy the application. The pipeline was split into three stages: a __terraform_infrastructure__ stage, a __docker__, and a __kubernetes_deploy__ stage. A self-hosted runner (a VM within the same private network as my cluster) was also configured. 
+A GitHub Actions CI/CD pipeline was implemented to deploy the application. The pipeline was split into three stages: a __terraform_infrastructure__ stage, a __docker_stage__, and a __kubernetes_deploy__ stage. A self-hosted runner (a VM within the same private network as my cluster) was also configured. 
 
 Azure CLI, Helm, Kubectl were pre-installed on my self-hosted runner to enable it run the commands in my workflow.
 
