@@ -333,11 +333,11 @@ az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr 
     while true; do
         ING=$(kubectl get ing python-ingress -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
         if [ $? -eq 0 ] && [ -n "$ING" ]; then
-        echo "Ingress IP retrieved successfully."
-        break
+          echo "Ingress IP retrieved successfully."
+          break
         else
-        echo "Waiting for ingress IP..."
-        sleep 60
+          echo "Waiting for ingress IP..."
+          sleep 60
         fi
     done
     az network dns zone create -n davidcloud.site -g myrg
