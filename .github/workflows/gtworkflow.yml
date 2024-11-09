@@ -40,6 +40,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
           kubelet: ${{ steps.terraform.outputs.USER_ASSIGNED_IDENTITY_ID }}
+          kube_object: ${{ steps.terraform.outputs.KUBE_OBJECT_ID }}
         if: ${{ github.event.inputs.APPLY == 'yes' }}
         steps:
             - name: Repository Checkout
@@ -175,6 +176,7 @@ jobs:
         - name: Deployment
           run: |
             az aks addon enable -n my-aks -g myrg --addon ingress-appgw --appgw-subnet-cidr ${{ vars.SUBNET }}
+            az keyvault set-policy -n ${{ vars.KEYVAULT_NAME }} --secret-permissions get list --object-id ${{ needs.terraform_infrastructure.outputs.kube_object }}
             kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml --validate=false
             for file in /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/*.yml; do
               if [[ "$(basename "$file")" != "certificate.yml" ]] && [[ "$(basename "$file")" != "issuer.yml" ]]; then
@@ -188,10 +190,19 @@ jobs:
             KEYVAULT_NAME: ${{ vars.KEYVAULT_NAME }}
             USER_ASSIGNED_IDENTITY_ID: ${{ needs.terraform_infrastructure.outputs.kubelet }}
             TENANT_ID: ${{ env.TENANT_ID }}
+            OBJECT_ID: ${{ needs.terraform_infrastructure.outputs.kube_object }}
         - name: Apply Cerftificate & Issuer
           run: |
             kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/issuer.yml --validate=false
             kubectl apply -f /home/azureuser/actions-runner/_work/infiniongt/infiniongt/manifests/certificate.yml --validate=false
+          continue-on-error: true
+        - name: DNS Records & Ingress
+          run: |
+            ING=$(kubectl get ing python-ingress -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            az network dns zone create -n davidcloud.site -g myrg
+            az network dns record-set a add-record -g myrg -z davidcloud.site -n "@" -a $ING
+            az network dns record-set a add-record -g myrg -z davidcloud.site -n grafana -a $ING
+            az network dns record-set a add-record -g myrg -z davidcloud.site -n prometheus -a $ING
     terraform_destroy:
       runs-on: ubuntu-latest
       if: ${{ github.event.inputs.DESTROY == 'yes' }}
