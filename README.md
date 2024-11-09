@@ -213,7 +213,7 @@ The Docker image for the application was built during this stage. A self-hosted 
 
 The Dockerfile for the build is detailed below:
 
-- Python 3.13.0rc2 was selected as the base image and set as an argument. It was suggested by the Snyk stage during the build as a lightweight image with low vulnerability.
+- __Python 3.13.0rc2__ was selected as the base image and set as an argument. It was suggested by the Snyk stage during the build as a lightweight image with low vulnerability.
 
 ```
 ARG PYTHON_VERSION=3.13.0rc2
