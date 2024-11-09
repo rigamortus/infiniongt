@@ -1,6 +1,6 @@
 # Python Application on Azure Kubernetes Service
 
-The aim of this project was to deploy a Python (Django) application on Azure Kubernetes Service. The infrastructure for the project was setup using Terraform modules and deployed with a GitHub Actions CI/CD pipeline. A Docker image was also be built and pushed to a private Azure Container Registry repository. Monitoring was implemented using Prometheus and Grafana, with custom alerts delivered to a Microsoft Teams channel using webhooks.
+The aim of this project was to deploy a Python (Django) application on Azure Kubernetes Service. The infrastructure for the project was setup using Terraform modules and deployed with a GitHub Actions CI/CD pipeline. A Docker image was also built and pushed to a private Azure Container Registry repository. Monitoring was implemented using Prometheus and Grafana, with custom alerts delivered to a Microsoft Teams channel using webhooks.
 
 ## Application Overview
 The target application was written using the Django framework and can be found [here](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart). For deployment to production, the application requires the generation of a secret value that is to be loaded as an environment variable. The secret value was generated with the command below:
