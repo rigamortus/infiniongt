@@ -219,7 +219,7 @@ The Dockerfile for the build is detailed below:
 ARG PYTHON_VERSION=3.13.0rc2
 FROM python:${PYTHON_VERSION}-alpine3.19 AS base
 ```
-- The following tools were added during initial local builds to identify and isolate select capabilities required by the container to run. Capabilites enable containers to perform certain sensitive kernel operations and system calls. As such, restricting a container's capabilities helps improve its security posture. The necessary capabilities  needed for the container to run were identified and later incorporated in the Kubernetes stage.
+- The following tools were added during initial local builds to identify and isolate select capabilities required by the container to run. Capabilities enable containers to perform certain sensitive kernel operations and system calls. As such, restricting a container's capabilities helps improve its security posture. The necessary capabilities needed for the container to run were identified and later incorporated in the __kubernetes_deploy__ stage.
 
 ```
 RUN apk update && apk add --no-cache gcc libcap musl-dev strace 
