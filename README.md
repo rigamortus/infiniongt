@@ -206,6 +206,7 @@ Kubelet application id and object id were also set as outputs to be used in the 
     echo "USER_ASSIGNED_IDENTITY_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep client_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
     echo "KUBE_OBJECT_ID=$(terraform state show 'module.clusters.azurerm_kubernetes_cluster.aks["my-aks"]' | grep -A 2 'kubelet_identity' | grep object_id | awk '{ print $3 }' | tr -d '"')" >> $GITHUB_OUTPUT
   working-directory: tercluster/
+```
 
 ### docker_stage
 The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was also used. Using a self-hosted runner enabled image pushing since the ACR was made accessible only within the a private network. 
