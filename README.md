@@ -195,7 +195,7 @@ This stage deployed the Terraform modules to Azure. It was run using a GitHub Ac
 - __azure/login@v2__: Login and establish connection to Azure using the secrets of the OIDC managed identity that was previously created.
 - __hashicorp/setup-terraform@v3__: Sets up Terraform on the runner
 
-The run steps under this stage parsed the Azure credentials and set them as variables, set up the backend config for the Terraform state files, and apply the Terraform plan file to deploy the infrastructure.
+The run steps under this stage parsed the Azure credentials and set them as variables, set up the backend config for the Terraform state files, and applied the Terraform plan file to deploy the infrastructure.
 
 Kubelet application id and object id were also set as outputs to be used in the __kubernetes_deploy__ stage:
 ```YAML
