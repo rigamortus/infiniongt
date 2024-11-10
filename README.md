@@ -40,7 +40,7 @@ Terrafrom modules were used to create a number of Azure resources for this proje
 - __Role Assignments__: Designate access permissions to the AKS cluster for image and secret pulling.
 
 ## Terraform Logic
-A modular approach was adopted using Terraform. A single __env.yaml__ file acts as the singular source of truth for the configuration of each resource. The __env.yaml__ file is decoded using Terraform's __yamldecode__ function and passed as a locals block in my __locals.tf__ file. Terraform outputs were also used to pass values in contexts were resource dependency exists. This approach allowed for easy scalability and modification of resources. A remote state backend using an Azure Blob container was also uses to ensure safe locking of the Terraform state file.
+A modular approach was adopted using Terraform. A single __env.yaml__ file acts as the singular source of truth for the configuration of each resource. The __env.yaml__ file is decoded using Terraform's __yamldecode__ function and passed as a locals block in my __locals.tf__ file. Terraform outputs were also used to pass values in contexts were resource dependency exists. This approach allowed for easy scalability and modification of resources. A remote state backend using an __Azure Blob__ container was also uses to ensure safe locking of the Terraform state file.
 
 ### __AKS__ Snippet:
 
@@ -187,15 +187,15 @@ A GitHub Actions CI/CD pipeline was implemented to deploy the application. The p
 
 Azure CLI, Helm, Kubectl were pre-installed on my self-hosted runner to enable it run the commands in my workflow.
 
-An OIDC managed identity with Contributor and RBAC Administrator roles was also created. A GitHub Actions secret was created to store the managed identity credentials needed to establish a connection to my Azure subscription.
+An __OIDC managed identity__ with __Contributor__ and __RBAC Administrator__ roles was also created. A GitHub Actions secret was created to store the managed identity credentials needed to establish a connection to my Azure subscription.
 
 ### Terraform_Infrastructure Stage
-This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __Ubuntu 22.04__. This stage comprised three run steps using the Azure CLI. and three actions:
+This stage deployed the Terraform modules to Azure. It was run using a GitHub Actions provided runner of type __ubuntu-latest__. This stage comprised three run steps using the Azure CLI. and three actions:
 - __actions/checkout@v4__: Pulls repository content from my GitHub repository.
 - __azure/login@v2__: Login and establish connection to Azure using the secrets of the OIDC managed identity that was previously created.
 - __hashicorp/setup-terraform@v3__: Sets up Terraform on the runner
 
-The run steps under this stage parsed the Azure credentials and set them as variables, set up the backend config for the Terraform state files, and applied the Terraform plan file to deploy the infrastructure.
+The run steps under this stage parsed the Azure credentials and set them as variables. It also set up the backend config for the Terraform state files and applied the Terraform plan file to deploy the infrastructure.
 
 Kubelet application id and object id were also set as outputs to be used in the __kubernetes_deploy__ stage:
 ```YAML
@@ -209,7 +209,7 @@ Kubelet application id and object id were also set as outputs to be used in the 
 ```
 
 ### docker_stage
-The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was used. Using a self-hosted runner enabled image pushing since the ACR was accessible only within the same private network. 
+The Docker image for the application was built during this stage. A self-hosted runner (an Azure VM) within the same network as the AKS cluster and the ACR was used for this stage. Using a self-hosted runner enabled image pushing since the ACR was accessible only within the same private network. 
 
 The Dockerfile for the build is detailed below:
 
@@ -352,15 +352,15 @@ A deployment with four replicas was my choice Kubernetes api-resource type for t
 - __RollingUpdate__ strategy type with maxUnavailable and maxSurge specified
 - __NodeSelector__ attribute to deploy the pods on my worker nodes
 - Resource limits for __CPU__ and __Memory usage__
-- __Seccomp__ profile set to RuntimeDefault
+- __Seccomp__ profile set to __RuntimeDefault__
 - Restricted capabilities (__NET_BIND_SERVICE__ & __CHOWN__ only)
 - Disabled privilege escalation
-- Pods are run as nonroot and using an unprivileged user
+- Pods are run using a nonroot and unprivileged user
 - Root volumes set to __readOnly__
-- ServiceAccountToken is not automatically mounted
-- Secret value was mounted as an ephemeral volume from the Key Vault on the pods
+- __ServiceAccountToken__ is not automatically mounted
+- Secret value was mounted as an __ephemeral volume__ from the Key Vault on the pods
 
-Other api-resources created include: ClusterIP, SecretProviderClass, Ingress (__python_ingress__, __prometheus ingress__, __grafana ingress__), HorizontalPodAutoscaler, Certificates (LetsEncrypt), and ClusterIssuer.
+Other api-resources created include: __ClusterIP__, __SecretProviderClass__, __Ingress__ (__python_ingress__, __prometheus ingress__, __grafana ingress__), __HorizontalPodAutoscaler__, __Certificates__ (LetsEncrypt), and __ClusterIssuer__.
 
 ## Monitoring
 For proper monitoring, Grafana dashboards and Prometheus alert rules were created.
@@ -372,17 +372,18 @@ __Prometheus__
 ## Alerting
 A webhook was integrated with a Teams channel (__Grafana Alerts__) for prompt delivery of alerts regarding the status of my application.
 
-As a test, an alert rule that notifies me when CPU usage of my pods extends beyond 10% of resource limits was created.
+As a test, an alert rule that notifies me when CPU usage of the pods in my default namespace extends beyond 10% of resource limits was created.
 
 __Query__
 
 ```promql
-100 * (sum by (pod) (rate(container_cpu_usage_seconds_total{namespace="YOUR_NAMESPACE", container!="POD"}[5m]))
+100 * (sum by (pod) (rate(container_cpu_usage_seconds_total{namespace="default", container!="POD"}[5m]))
  / 
- sum by (pod) (kube_pod_container_resource_requests{namespace="YOUR_NAMESPACE", resource="cpu"})) > 10
+ sum by (pod) (kube_pod_container_resource_requests{namespace="default", resource="cpu"})) > 10
  ```
 
  __Grafana Alerts__
+Grafana configuration:
  ![grafana1](./images/graf-1.png)
  ![grafana2](./images/grafana-2.png)
  ![grafana3](./images/grafana-3.png)
@@ -390,6 +391,7 @@ __Query__
 
 
  __Teams Notification__
+ Teams alert:
  ![teams](./images/alertnotif.png)
 
 
