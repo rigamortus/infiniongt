@@ -160,7 +160,6 @@ aks-clusters:
         service_cidr: "10.1.0.0/16"  # Non-overlapping range
         dns_service_ip: "10.1.0.10" 
       api_server_access_profile:
-        enable_public_access: true
         authorized_ip_ranges: []
       identity:
         type: "SystemAssigned"
