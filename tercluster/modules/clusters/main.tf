@@ -34,11 +34,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type = each.value.identity.type
   }
 
-  # ingress_application_gateway {
-  #   gateway_name = each.value.ingressApplicationGateway.gatewayName
-  #   subnet_id    = var.subnet_ids[each.value.ingressApplicationGateway.subnetId]
-  # }
-
   tags = each.value.tags
 }
 
