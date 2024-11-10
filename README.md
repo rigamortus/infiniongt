@@ -382,6 +382,7 @@ __Query__
  ```
 
  __Grafana Alerts__
+
 Grafana configuration:
  ![grafana1](./images/graf-1.png)
  ![grafana2](./images/grafana-2.png)
@@ -390,7 +391,8 @@ Grafana configuration:
 
 
  __Teams Notification__
- Teams alert:
+
+Teams alert:
  ![teams](./images/alertnotif.png)
 
 
